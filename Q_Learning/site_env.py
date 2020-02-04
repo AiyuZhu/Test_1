@@ -176,14 +176,15 @@ class Site(tk.Tk, object):
 
 
         self.canvas.move(self.rect, base_action[0], base_action[1])  # move agent
-        s_ = self.canvas.coords(self.rect)  # next state
+        # new_s = []
+        # for i in range(4):
+        #     new = self.canvas.coords(self.rect)[i]-self.canvas.coords(self.location)[i]
+        #     new_s.append(new)
 
-        # if s_[0] <= 50 or s_[0] >= 550 or s_[1] <= 50 or s_[1] >= 550:
-        #     self.done = True
-        #     self.reward -= 10
-        # print(s)
+        s_ = self.canvas.coords(self.rect)  # next state
+        # s = new_s
         # print(s_)
-        # if self.init_counter % 10 == 0:
+
         a = RL.get_action_value(self).round(2)
         up=tk.Label(self, text=a[0])
         up.place(x=s[0] + 40, y=s[1] + 20, anchor="center")

@@ -16,7 +16,7 @@ def update():
 
     good_episode = []
 
-    for episode in range(1000):
+    for episode in range(2):
     # while env.counter != 2:
         # initial observation
         record_step = pd.DataFrame(columns= [0,1,2,3], dtype=np.float64)
@@ -46,6 +46,7 @@ def update():
             record_step = record_step.append(RL.get_action_value())
             # swap observation
             observation = observation_
+            # print(observation)
             step_counter += 1
 
 
@@ -65,8 +66,8 @@ def update():
                 break
             if env.counter == 2:
                 print('it is end')
-                # if step_counter <= store_step[-1] and record_step >= store_rewards[-1]:
-                #     good_episode.append(record_step)
+                if step_counter <= store_step[-1] and record_step >= store_rewards[-1]:
+                    good_episode.append(record_step)
                 store_step.append(step_counter)
                 store_rewards.append(reward)
                 store_episode.append(record_step)
@@ -78,8 +79,9 @@ def update():
                 print('\n')
                 break
     print('total success is:', successful_counter)
+    print('the good episode',good_episode)
     # end of game
-    print('game over')
+    print('over')
     # print(store_episode)
     env.destroy()
 
