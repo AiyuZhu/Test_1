@@ -5,8 +5,6 @@ import tensorflow as tf
 np.random.seed(1)
 tf.set_random_seed(1)
 
-
-# Deep Q Network off-policy
 class DeepQNetwork:
     def __init__(
             self,
@@ -15,10 +13,10 @@ class DeepQNetwork:
             learning_rate=0.01,
             reward_decay=0.9,
             e_greedy=0.9,
-            replace_target_iter=300,
-            memory_size=500,
+            replace_target_iter=200,
+            memory_size=100000,
             batch_size=32,
-            e_greedy_increment=None,
+            e_greedy_increment= None,
             output_graph=False,
     ):
         self.n_actions = n_actions
@@ -63,18 +61,18 @@ class DeepQNetwork:
         self.r = tf.placeholder(tf.float32, [None, ], name='r')  # input Reward
         self.a = tf.placeholder(tf.int32, [None, ], name='a')  # input Action
 
-        w_initializer, b_initializer = tf.random_normal_initializer(0., 0.3), tf.constant_initializer(0.1)
+        w_initializer, b_initializer = tf.random_normal_initializer(0., 0.0001), tf.constant_initializer(0.0001)
 
         # ------------------ build evaluate_net ------------------
         with tf.variable_scope('eval_net'):
-            e1 = tf.layers.dense(self.s, 20, tf.nn.relu, kernel_initializer=w_initializer,
+            e1 = tf.layers.dense(self.s, 30, tf.nn.relu, kernel_initializer=w_initializer,
                                  bias_initializer=b_initializer, name='e1')
             self.q_eval = tf.layers.dense(e1, self.n_actions, kernel_initializer=w_initializer,
                                           bias_initializer=b_initializer, name='q')
 
         # ------------------ build target_net ------------------
         with tf.variable_scope('target_net'):
-            t1 = tf.layers.dense(self.s_, 20, tf.nn.relu, kernel_initializer=w_initializer,
+            t1 = tf.layers.dense(self.s_, 30, tf.nn.relu, kernel_initializer=w_initializer,
                                  bias_initializer=b_initializer, name='t1')
             self.q_next = tf.layers.dense(t1, self.n_actions, kernel_initializer=w_initializer,
                                           bias_initializer=b_initializer, name='t2')
@@ -95,7 +93,7 @@ class DeepQNetwork:
             self.memory_counter = 0
         transition = np.hstack((s, [a, r], s_))
         # replace the old memory with new memory
-        index = self.memory_counter % self.memory_size
+        index = self.memory_counter % self.memory_size #6
         self.memory[index, :] = transition
         self.memory_counter += 1
 
@@ -110,6 +108,7 @@ class DeepQNetwork:
             action = np.argmax(actions_value)
         else:
             action = np.random.randint(0, self.n_actions)
+            actions_value = np.zeros(4)
         return action
 
     def learn(self):
@@ -143,10 +142,9 @@ class DeepQNetwork:
     def plot_cost(self):
         import matplotlib.pyplot as plt
         plt.plot(np.arange(len(self.cost_his)), self.cost_his)
-        plt.ylabel('Cost')
+        plt.ylabel('loss')
         plt.xlabel('training steps')
         plt.show()
-
 
     def get_action_value(self):
         return actions_value

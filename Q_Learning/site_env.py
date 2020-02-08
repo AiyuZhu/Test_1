@@ -185,6 +185,8 @@ class Site(tk.Tk, object):
         # s = new_s
         # print(s_)
 
+
+        #get action value
         a = RL.get_action_value(self).round(2)
         up=tk.Label(self, text=a[0])
         up.place(x=s[0] + 40, y=s[1] + 20, anchor="center")

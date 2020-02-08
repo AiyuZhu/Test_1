@@ -2,7 +2,7 @@ import pandas as pd
 from site_env import Site
 from RL_brain import QLearningTable
 import numpy as np
-# from DQN_modified import DeepQNetwork
+
 
 
 def update():
@@ -88,7 +88,6 @@ def update():
 if __name__ == "__main__":
     env = Site()
     RL = QLearningTable(actions=list(range(env.n_actions)))
-    # RL = DeepQNetwork(4,2)
 
 
     env.after(100, update)
